@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--Project was exported from assembly: C:\Users\neite\OneDrive\Documents\לימודים\Server\LiarServerApp.exe-->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3A836264-D206-47DD-AE86-C13B407A6547}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>LiarServerApp</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <ApplicationVersion>1.0.0.0</ApplicationVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="NAudio">
+      <HintPath>..\..\cheatgit\CheatGameApp\packages\NAudio.1.8.5\lib\net35\NAudio.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="JpegEncoding.cs" />
+    <Compile Include="Network\TcpConnectionBase.cs" />
+    <Compile Include="Network\Server.cs" />
+    <Compile Include="Network\IPEndPointParser.cs" />
+    <Compile Include="Network\Messages\MoveType.cs" />
+    <Compile Include="Network\Messages\Message.cs" />
+    <Compile Include="Network\Messages\MoveMessage.cs" />
+    <Compile Include="Network\Messages\Move.cs" />
+    <Compile Include="Network\Messages\BoardMessage.cs" />
+    <Compile Include="Network\Messages\ControlCommandType.cs" />
+    <Compile Include="Network\Messages\ControlMessage.cs" />
+    <Compile Include="Network\Messages\DemographicsMessage.cs" />
+    <Compile Include="Network\Messages\MessageEventArg.cs" />
+    <Compile Include="Network\Messages\JpgMessage.cs" />
+    <Compile Include="Players\Counties.cs" />
+    <Compile Include="Players\EducationFields.cs" />
+    <Compile Include="Players\EducationType.cs" />
+    <Compile Include="Players\Demographics.cs" />
+    <Compile Include="Players\Enumarations\Genders.cs" />
+    <Compile Include="IContainer.cs" />
+    <Compile Include="GamesArchive.cs" />
+    <Compile Include="CardsStruct.cs" />
+    <Compile Include="1GamesArchive.cs" />
+    <Compile Include="2GamesArchive.cs" />
+    <Compile Include="3GamesArchive.cs" />
+    <Compile Include="4GamesArchive.cs" />
+    <Compile Include="5GamesArchive.cs" />
+    <Compile Include="BoardState.cs" />
+    <Compile Include="CardHolderInterface.cs" />
+    <Compile Include="Board.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="TimeStamper.cs" />
+    <Compile Include="Player.cs" />
+    <Compile Include="MessageLoop.cs" />
+    <Compile Include="HumanPlayer.cs" />
+    <Compile Include="AgentPlayer.cs" />
+    <Compile Include="CheatEngine.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\Resources.Designer.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="Video\VideoForm.cs" />
+    <Compile Include="Video\WebcamEventArgs.cs" />
+    <Compile Include="Video\WebCamAPI.cs" />
+    <Compile Include="Video\WebCamCapture.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Video\Multithreading\ITask.cs" />
+    <Compile Include="Video\Multithreading\SaveImageTask.cs" />
+    <Compile Include="Video\Multithreading\TaskResult.cs" />
+    <Compile Include="Video\Multithreading\TaskResults.cs" />
+    <Compile Include="Video\Multithreading\FeatureExtractionTask.cs" />
+    <Compile Include="Video\Multithreading\TaskManager.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Centipede\Video\WebCamCapture.resx" />
+    <EmbeddedResource Include="Centipede\VideoForm.resx" />
+    <EmbeddedResource Include="LiarServerApp\Properties\Resources.resx" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
