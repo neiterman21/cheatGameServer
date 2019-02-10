@@ -211,11 +211,9 @@ namespace CheatGame
 
     private static void OnServer_ReceivedAudioMessage(AudioMessage message, int playerId)
     {
-      Console.WriteLine("Received audio. Size: " + message.GetRecording().Length);
       TimeSpan time = TimeStamper.Time;
       int index = (playerId + 1) % 2;
-      if (Program._tcpConnections[index].IsStarted)
-        Program._tcpConnections[index].Send((Message) message);
+      Program._tcpConnections[index].Send(message);
       string currentFolder = Program.viewModel.GetCurrentFolder(playerId);
       if (currentFolder != null)
       {
@@ -223,6 +221,7 @@ namespace CheatGame
         ++Program.m_imagesIndex[playerId];
       }
       TimeSpan timeSpan = TimeStamper.Time - time;
+   
     }
 
     private static void OnServer_ReceivedDemographics(DemographicsMessage message, int playerId)
