@@ -8,6 +8,7 @@ using CentipedeModel;
 using CentipedeModel.Network;
 using CentipedeModel.Network.Messages;
 using CentipedeModel.Players;
+using NAudio.Wave;
 using System;
 using System.IO;
 using System.Threading;
@@ -154,9 +155,9 @@ namespace CheatGame
         }
         else
         {
-          if (!(e.Message is JpgMessage))
+          if (!(e.Message is AudioMessage))
             return;
-          Program.OnServer_ReceivedJpgMessage(e.Message as JpgMessage, playerId);
+          Program.OnServer_ReceivedAudioMessage(e.Message as AudioMessage, playerId);
         }
       }
     }
@@ -177,39 +178,40 @@ namespace CheatGame
         Program.m_imagesIndex[index] = 0;
     }
 
-    private static void SaveImage(JpgMessage msg, TimeSpan time, string folder, int imageIndex, int playerId)
+    private static void SaveAudio(AudioMessage msg, TimeSpan time, string folder, int audioIndex, int playerId)
     {
       MessageLoop messageLoop = Program.m_saveMessageLoop[playerId];
       if (messageLoop.InvokeRequired())
       {
-        messageLoop.BeginInvoke((Delegate) new Program.SaveImageHandler(Program.SaveImage), (object) msg, (object) time, (object) folder, (object) imageIndex, (object) playerId);
+        messageLoop.BeginInvoke((Delegate) new Program.SaveAudioHandler(Program.SaveAudio), (object) msg, (object) time, (object) folder, (object)audioIndex, (object) playerId);
       }
       else
       {
         TimeSpan time1 = TimeStamper.Time;
         try
         {
-          string str = string.Format("img_{0:0000}.jpg", (object) imageIndex);
+          string str = string.Format("audio_{0:0000}.wav", (object)audioIndex);
           string filename = string.Format("{0}\\{1}", (object) folder, (object) str);
-          msg.GetImage().Save(filename, JpegEncoding.Codec, JpegEncoding.EncoderParams100);
-          File.AppendAllText(string.Format("{0}\\imageTimeStamps.txt", (object) folder), string.Format("{0}\t{1}{2}", (object) time, (object) str, (object) Environment.NewLine));
+          Console.WriteLine("saving audio file to " + filename);
+          WaveFileWriter.CreateWaveFile(filename, msg.GetRecording());
           if (messageLoop.Count % 100 == 0 && messageLoop.Count != 0)
             Console.WriteLine("m_saveMessageLoop" + (object) playerId + ".Count: " + (object) messageLoop.Count);
         }
         catch (Exception ex)
         {
-          Console.WriteLine("Error in save image: " + ex.Message);
+          Console.WriteLine("Error in save recording: " + ex.Message);
         }
         finally
         {
-          msg.DisposeImage();
+          msg.Dispose();
         }
         TimeSpan timeSpan = TimeStamper.Time - time1;
       }
     }
 
-    private static void OnServer_ReceivedJpgMessage(JpgMessage message, int playerId)
+    private static void OnServer_ReceivedAudioMessage(AudioMessage message, int playerId)
     {
+      Console.WriteLine("Received audio. Size: " + message.GetRecording().Length);
       TimeSpan time = TimeStamper.Time;
       int index = (playerId + 1) % 2;
       if (Program._tcpConnections[index].IsStarted)
@@ -217,7 +219,7 @@ namespace CheatGame
       string currentFolder = Program.viewModel.GetCurrentFolder(playerId);
       if (currentFolder != null)
       {
-        Program.SaveImage(message, time, currentFolder, Program.m_imagesIndex[playerId], playerId);
+        Program.SaveAudio(message, time, currentFolder, Program.m_imagesIndex[playerId], playerId);
         ++Program.m_imagesIndex[playerId];
       }
       TimeSpan timeSpan = TimeStamper.Time - time;
@@ -258,6 +260,6 @@ namespace CheatGame
         Program.viewModel.GameStepOnReceivedOpponentMove(move, playerId);
     }
 
-    public delegate void SaveImageHandler(JpgMessage msg, TimeSpan time, string folder, int imageIndex, int playerId);
+    public delegate void SaveAudioHandler(AudioMessage msg, TimeSpan time, string folder, int imageIndex, int playerId);
   }
 }

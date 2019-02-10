@@ -5,6 +5,7 @@
 // Assembly location: C:\Users\neite\OneDrive\Documents\לימודים\Server\LiarServerApp.exe
 
 using CentipedeModel.Network.Messages;
+using CheatGame;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,8 +22,6 @@ namespace CentipedeModel.Network
     protected byte[] m_buffer = new byte[4096];
     protected List<byte> m_messageBuffer = new List<byte>();
     protected Socket m_socket;
-        protected string recived_file_tmp_location = @"C: \Users\neite\OneDrive\Desktop\system_recorded_audio_recieved.wav";
-
     public abstract void SetIPEndPoints(string serverIPEndPoint, string ClientIPEndPoint);
 
     public abstract IPEndPoint[] GetIPEndPoints();
@@ -75,14 +74,7 @@ namespace CentipedeModel.Network
       try
       {
         int count1 = this.m_socket.EndReceive(result);
-        if (count1 > 1000) //this is an audio file
-        {
-           byte[] array2 = this.m_messageBuffer.ToArray();
-           var bw = new BinaryWriter(File.Open(recived_file_tmp_location, FileMode.OpenOrCreate));
-           bw.Write(array2);
-           bw.Flush();
-           bw.Close();
-        }
+
         byte[] array1 = new byte[count1];
         Buffer.BlockCopy((Array) this.m_buffer, 0, (Array) array1, 0, count1);
         if (this.m_messageBuffer.Count > 0)
@@ -146,6 +138,6 @@ namespace CentipedeModel.Network
       this.m_socket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, (AsyncCallback) null, (object) null);
     }
 
-    public abstract void Dispose();
+        public abstract void Dispose();
   }
 }

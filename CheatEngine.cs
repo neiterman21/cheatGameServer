@@ -4,6 +4,7 @@
 // MVID: D9C86562-18F8-4555-90FE-AA8F248B8776
 // Assembly location: C:\Users\neite\OneDrive\Documents\לימודים\Server\LiarServerApp.exe
 
+using CentipedeModel.Network;
 using CentipedeModel.Network.Messages;
 using System;
 using System.Collections.Generic;
@@ -262,6 +263,12 @@ namespace CheatGame
       this.IsGameOver = true;
       this.PlayerMsg = "";
     }
+
+    public void sendRecordingToOpponets(AudioMessage message, int playerId)
+    {
+          Program._tcpConnections[playerId].Send(message);
+    }
+    
 
     public void GameStep()
     {
@@ -552,8 +559,10 @@ namespace CheatGame
 
     private void SaveTurn()
     {
-      for (int index = 0; index < Program.NUM_PLAYERS; ++index)
-        this.GamesArchive.Save(this._fullPathPlayersFolders[index] + "\\Summary.xml");
+            for (int index = 0; index < Program.NUM_PLAYERS; ++index)
+            {
+                this.GamesArchive.Save(this._fullPathPlayersFolders[index] + "\\Summary.xml");
+            }
     }
 
     public string GetCurrentFolder(int playerId)

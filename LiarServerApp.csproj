@@ -43,7 +43,9 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileLockHelper.cs" />
     <Compile Include="JpegEncoding.cs" />
+    <Compile Include="Network\Messages\AudioMessage.cs" />
     <Compile Include="Network\TcpConnectionBase.cs" />
     <Compile Include="Network\Server.cs" />
     <Compile Include="Network\IPEndPointParser.cs" />
