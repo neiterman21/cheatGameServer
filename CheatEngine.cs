@@ -286,7 +286,7 @@ namespace CheatGame
         }
         this.SendBoardToOpponents();
       }
-      if (this.tryEndGame())
+      if (this.tryEndGame(this.CurrentPlayer.Forfeited))
         return;
       if (this.CurrentPlayer.TakeCard)
       {
@@ -345,9 +345,9 @@ namespace CheatGame
       this.swapPlayerTurn();
     }
 
-    private bool tryEndGame()
+    private bool tryEndGame(bool forfieted = false)
     {
-      if (this.NonCurrentPlayer.Cards.CardsNum != 0)
+      if (this.NonCurrentPlayer.Cards.CardsNum != 0 && !forfieted)
         return false;
       for (int index = 0; index < Program.NUM_PLAYERS; ++index)
         this.PlayerStartPressed[index] = false;
@@ -481,7 +481,10 @@ namespace CheatGame
         case MoveType.CallCheat:
           this.CurrentPlayer.decideCallCheat();
           break;
-      }
+        case MoveType.ForfeitGame:
+          this.CurrentPlayer.Forfeited = true;
+          break;
+        }
       this.GameStep();
     }
 

@@ -13,6 +13,7 @@ namespace CheatGame
     protected bool _takeCard = false;
     protected bool _playMove = false;
     protected bool _callCheat = false;
+    protected bool _forfeited = false;
 
     public string PlayerName { get; set; }
 
@@ -38,6 +39,7 @@ namespace CheatGame
       this.CallCheat = false;
       this.PlayMove = false;
       this.TakeCard = false;
+      this._forfeited = false;
       this.realMove = CardsStruct.EmptyStruct;
       this.claimMove = CardsStruct.EmptyStruct;
     }
@@ -93,7 +95,19 @@ namespace CheatGame
       }
     }
 
-    public bool CallCheat
+    public bool Forfeited
+        {
+        get
+        {
+            return this._forfeited;
+        }
+        set
+        {
+            this._forfeited = value;
+        }
+    }
+
+        public bool CallCheat
     {
       get
       {

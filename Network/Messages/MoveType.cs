@@ -12,5 +12,7 @@ namespace CentipedeModel.Network.Messages
     TakeCard,
     CallCheat,
     StartPressed,
-  }
+    EndReveal,
+    ForfeitGame,
+    }
 }
