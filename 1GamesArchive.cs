@@ -148,7 +148,10 @@ namespace CheatGame
           case MoveType.CallCheat:
             Root.SetAttribute("CheatCallCorrect", (object) !this.PreviousTurn.IsTrueClaim);
             break;
-        }
+          case MoveType.CallCheatyOpponent:
+            Root.SetAttribute("CheatyOpponentReport", (object)true);
+            break;
+          }
       }
       catch (Exception ex)
       {

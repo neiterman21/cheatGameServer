@@ -14,6 +14,7 @@ namespace CheatGame
     protected bool _playMove = false;
     protected bool _callCheat = false;
     protected bool _forfeited = false;
+    protected bool _cheatyopponent = false;
 
     public string PlayerName { get; set; }
 
@@ -104,6 +105,18 @@ namespace CheatGame
         set
         {
             this._forfeited = value;
+        }
+    }
+
+    public bool CheatyOpponent
+    {
+        get
+        {
+            return this._cheatyopponent;
+        }
+        set
+        {
+            this._cheatyopponent = value;
         }
     }
 

@@ -14,5 +14,6 @@ namespace CentipedeModel.Network.Messages
     StartPressed,
     EndReveal,
     ForfeitGame,
+    CallCheatyOpponent,
     }
 }

@@ -272,6 +272,13 @@ namespace CheatGame
 
     public void GameStep()
     {
+      if (this.CurrentPlayer.CheatyOpponent) 
+      {
+        this.NonCurrentPlayer.addCards(this._board.emptyPlayedStack());
+        this.BoardMsg = this.CurrentPlayer.PlayerName + " declared your vocal statment was missing or not coresponding to your cardes claim." + 
+        this.NonCurrentPlayer.PlayerName + " takes the game stack. This report will be checked manualy ";
+        this.SendBoardToOpponents();
+      }
       if (this.CurrentPlayer.CallCheat)
       {
         if (this.isCheat())
@@ -483,6 +490,9 @@ namespace CheatGame
           break;
         case MoveType.ForfeitGame:
           this.CurrentPlayer.Forfeited = true;
+          break;
+        case MoveType.CallCheatyOpponent:
+          this.CurrentPlayer.CheatyOpponent = true;
           break;
         }
       this.GameStep();
