@@ -151,7 +151,7 @@ namespace CheatGame
           case MoveType.CallCheatyOpponent:
             Root.SetAttribute("CheatyOpponentReport", (object)true);
             break;
-          }
+        }
       }
       catch (Exception ex)
       {

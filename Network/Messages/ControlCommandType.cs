@@ -11,5 +11,6 @@ namespace CentipedeModel.Network.Messages
     Start,
     Tick,
     End,
+    Report,
   }
 }

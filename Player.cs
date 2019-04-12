@@ -38,6 +38,7 @@ namespace CheatGame
     {
       this.Cards.reset();
       this.CallCheat = false;
+      this.CheatyOpponent = false;
       this.PlayMove = false;
       this.TakeCard = false;
       this._forfeited = false;

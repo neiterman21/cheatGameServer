@@ -10,19 +10,22 @@ using CentipedeModel.Network.Messages;
 using CentipedeModel.Players;
 using NAudio.Wave;
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Threading;
 using System.Xml;
+using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace CheatGame
 {
-  internal class Program
-  {
+  public class Program 
+    {
     public static int NUM_PLAYERS = 2;
     public static TcpConnectionBase[] _tcpConnections = new TcpConnectionBase[Program.NUM_PLAYERS];
     public static bool IsServer = true;
     public static int[] m_imagesIndex = new int[Program.NUM_PLAYERS];
-    private static int numConnectionStarted = 0;
+    private static int _numConnectionStarted = 0;
     private static int numPlayersEndedRevealing = 0;
     private static int _numDemographicsReceived = 0;
     public static Demographics[] _demographics = new Demographics[2];
@@ -36,7 +39,8 @@ namespace CheatGame
     public static int _numGames;
     private static string SERVER_ENDPOINT;
 
-    private static void Main(string[] args)
+   
+        private static void Main(string[] args)
     {
       Console.WriteLine("Welcome to Liar! game server." + Environment.NewLine);
       Console.WriteLine(Environment.NewLine + "Loading parameters file from: {0}" + Environment.NewLine, (object) "Params.xml");
@@ -118,11 +122,16 @@ namespace CheatGame
 
     protected static void OnTcpConnection_Started(object sender, EventArgs e)
     {
-      if (Program.m_mainMessageLoop.InvokeRequired())
-        Program.m_mainMessageLoop.BeginInvoke((Delegate) new EventHandler(Program.OnTcpConnection_Started), sender, (object) e);
-      else
-        Console.WriteLine("Connection established: " + (object) (sender as Server).GetIPEndPoints()[0]);
-    }
+        if (Program.m_mainMessageLoop.InvokeRequired())
+            Program.m_mainMessageLoop.BeginInvoke((Delegate)new EventHandler(Program.OnTcpConnection_Started), sender, (object)e);
+        else
+        {
+            Console.WriteLine("Connection established: " + (object)(sender as Server).GetIPEndPoints()[0]);
+            _numConnectionStarted = _numConnectionStarted + 1;
+        }
+        if (_numConnectionStarted >= 2)
+            Process.Start(Application.ExecutablePath);
+        }
 
     protected static bool TryInitPlayers()
     {
@@ -137,7 +146,6 @@ namespace CheatGame
 
     protected static void OnServer_MessageReceived(object sender, MessageEventArg e)
     {
-            Console.WriteLine("got massage ");
       if (Program.m_mainMessageLoop.InvokeRequired())
       {
         Program.m_mainMessageLoop.BeginInvoke((Delegate) new EventHandler<MessageEventArg>(Program.OnServer_MessageReceived), sender, (object) e);
@@ -165,6 +173,7 @@ namespace CheatGame
     private static void OnServer_ReceivedControl(ControlMessage controlMessage, int playerId)
     {
       Console.WriteLine("Player " + (object) playerId + " received control msg : " + (object) controlMessage.Commmand);
+            if (controlMessage.Commmand == ControlCommandType.Report) ReportUnfairPlay();
       if (++Program.numPlayersEndedRevealing != Program.NUM_PLAYERS)
         return;
       Console.WriteLine("Reveal Ended");
@@ -177,7 +186,10 @@ namespace CheatGame
       for (int index = 0; index < Program.NUM_PLAYERS; ++index)
         Program.m_imagesIndex[index] = 0;
     }
-
+    private static void ReportUnfairPlay()
+    {
+        
+    }
     private static void SaveAudio(AudioMessage msg, TimeSpan time, string folder, int audioIndex, int playerId)
     {
       MessageLoop messageLoop = Program.m_saveMessageLoop[playerId];

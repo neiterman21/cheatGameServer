@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace CheatGame
 {
@@ -275,7 +276,7 @@ namespace CheatGame
       if (this.CurrentPlayer.CheatyOpponent) 
       {
         this.NonCurrentPlayer.addCards(this._board.emptyPlayedStack());
-        this.BoardMsg = this.CurrentPlayer.PlayerName + " declared your vocal statment was missing or not coresponding to your cardes claim." + 
+        this.BoardMsg = this.CurrentPlayer.PlayerName + " declared " + this.NonCurrentPlayer.PlayerName + " vocal statment was missing or not coresponding to your cardes claim." + 
         this.NonCurrentPlayer.PlayerName + " takes the game stack. This report will be checked manualy ";
         this.SendBoardToOpponents();
       }
@@ -354,7 +355,7 @@ namespace CheatGame
 
     private bool tryEndGame(bool forfieted = false)
     {
-      if (this.NonCurrentPlayer.Cards.CardsNum != 0 && !forfieted)
+      if (this.NonCurrentPlayer.Cards.CardsNum > 0 && !forfieted)
         return false;
       for (int index = 0; index < Program.NUM_PLAYERS; ++index)
         this.PlayerStartPressed[index] = false;
@@ -430,6 +431,12 @@ namespace CheatGame
         state.SetCards(this.Players[index].Cards.Model);
         state.IsServerTurn = flag || this.CurrentPlayer.CallCheat;
         state.TakeCardEnable = !flag && this._board.getCardsNum() != 0 && !this.CurrentPlayer.CallCheat;
+        if (this.CurrentPlayer.CheatyOpponent)
+        {
+           state.IsServerTurn = !flag;
+           state.TakeCardEnable = flag;
+        }
+        state.CanDispute = this.CurrentPlayer.CheatyOpponent && !flag;
         state.CallCheatEnable = !flag && this.CurrentPlayer.PlayMove;
         state.LastClaimNum = this._board.LastClaimNum != -1 ? this._board.LastClaimNum.ToString() : "";
         state.LastClaimPlayerName = this._lastClaimPlayerName;
@@ -442,6 +449,7 @@ namespace CheatGame
         state.UsedCardsNumbers = this.CurrentPlayer.CallCheat ? this.GetCardsToReveal() : "";
         Program._tcpConnections[index].Send((Message) new BoardMessage(state));
       }
+      this.CurrentPlayer.CheatyOpponent = false;
     }
 
     public void SendEmptyBoardToOpponent(int playerId, bool IsStartPressed)
@@ -463,6 +471,7 @@ namespace CheatGame
         PlayerMsg = "",
         AgentStartPressed = IsStartPressed,
         IsRevealing = false,
+        CanDispute =false,
         UsedCardsNumbers = ""
       }));
     }
@@ -548,9 +557,17 @@ namespace CheatGame
       {
         this._opponentFolders[index3] = string.Format("\\{0}", (object) Names[index3]);
         this._fullPathPlayersFolders[index3] = Program.RootDir + this._opponentFolders[index3];
-        if (Directory.Exists(Program.RootDir + this._opponentFolders[index3]))
-          Directory.Move(Program.RootDir + this._opponentFolders[index3], Program.RootDir + this._opponentFolders[index3] + ".moved" + str3);
-        Directory.CreateDirectory(this._fullPathPlayersFolders[index3]);
+        int i = 0;
+        while (Directory.Exists(Program.RootDir + this._opponentFolders[index3]))
+         {
+            if (Regex.IsMatch(_opponentFolders[index3].Substring(_opponentFolders[index3].Length - 1 ,1), @"\d")) { //check if last char is a digit
+                        this._opponentFolders[index3] = _opponentFolders[index3].Substring(_opponentFolders[index3].Length - 1, 1);
+                                    }
+            this._opponentFolders[index3] = this._opponentFolders[index3] + i.ToString();
+            i++;
+            this._fullPathPlayersFolders[index3] = Program.RootDir + this._opponentFolders[index3];
+         }
+         Directory.CreateDirectory(this._fullPathPlayersFolders[index3]);
       }
       this._currGame = new Game(this.GamesArchive);
       this._currSession = new Session(this._currGame);

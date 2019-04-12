@@ -40,6 +40,8 @@ namespace CheatGame
 
     public bool IsRevealing { get; set; }
 
+    public bool CanDispute { get; set; }
+
     public string UsedCardsNumbers { get; set; }
 
     public int Ace { get; set; }
