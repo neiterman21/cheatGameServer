@@ -16,6 +16,7 @@ using System.Threading;
 using System.Xml;
 using System.Diagnostics;
 using System.Windows.Forms;
+using CentipedeModel.Network.Messages;
 
 namespace CheatGame
 {
@@ -101,7 +102,11 @@ namespace CheatGame
       if (Program.RootDir != "" && !Directory.Exists(Program.RootDir))
         Directory.CreateDirectory(Program.RootDir);
       if (string.IsNullOrEmpty(doc.GetParamString("NETWORK")))
+      {
+        SendEndGameMessagesToPlayers();
         return;
+      }
+        
       for (int index = 0; index < Program.NUM_PLAYERS; ++index)
       {
         Program.SERVER_ENDPOINT = doc.GetParamString("SERVER_ENDPOINT" + (index + 1).ToString());
@@ -173,7 +178,7 @@ namespace CheatGame
     private static void OnServer_ReceivedControl(ControlMessage controlMessage, int playerId)
     {
       Console.WriteLine("Player " + (object) playerId + " received control msg : " + (object) controlMessage.Commmand);
-            if (controlMessage.Commmand == ControlCommandType.Report) ReportUnfairPlay();
+      if (controlMessage.Commmand == ControlCommandType.Report) ReportUnfairPlay();
       if (++Program.numPlayersEndedRevealing != Program.NUM_PLAYERS)
         return;
       Console.WriteLine("Reveal Ended");
@@ -252,11 +257,12 @@ namespace CheatGame
 
     private static void OnServer_ReceivedMove(MoveMessage message, int playerId)
     {
-      Console.WriteLine("revieced move before opening it");
+      
       Move move = message.GetMove();
       Console.WriteLine("revieced move" + move.ToString());
       if (move.MoveType == MoveType.StartPressed)
       {
+        Console.WriteLine("recieved start game move");
         Program.viewModel.PlayerStartPressed[playerId] = true;
         CheatEngine viewModel = Program.viewModel;
         bool flag = true;
@@ -264,11 +270,40 @@ namespace CheatGame
         int num = flag ? 1 : 0;
         viewModel.SendEmptyBoardToOpponent(playerId1, num != 0);
         if (Program.viewModel.TryStartGame() != CheatEngine.TryStartGameReturnCodes.MAX_GAMES_REACHED)
+
           return;
         Program.m_mainMessageLoop.Cancel();
       }
       else
         Program.viewModel.GameStepOnReceivedOpponentMove(move, playerId);
+    }
+
+    private static void SendEndGameMessagesToPlayers()
+    {
+       for (int index = 0; index < 2; ++index)
+         {
+           ControlMessage msg = new ControlMessage(ControlCommandType.EndMatch , viewModel.GamesArchive._endGameString[index]);
+           Program._tcpConnections[index].Send(msg);
+         }        
+             
+    }
+
+    public static void PlayerDisconectionHandler(TcpConnectionBase client)
+    {
+      if (_numConnectionStarted >= 2)
+      {
+        for (int index = 0; index < 2; ++index)
+        {
+          ControlMessage msg = new ControlMessage(ControlCommandType.OpponentDisconected, viewModel.GamesArchive._endGameString[index]);
+          Program._tcpConnections[index].Send(msg);
+        }
+      }
+      else
+      {
+        Process.Start(Application.ExecutablePath);
+      }    
+      Environment.Exit(0);
+      
     }
 
     public delegate void SaveAudioHandler(AudioMessage msg, TimeSpan time, string folder, int imageIndex, int playerId);

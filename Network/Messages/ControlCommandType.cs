@@ -12,5 +12,7 @@ namespace CentipedeModel.Network.Messages
     Tick,
     End,
     Report,
+    EndMatch,
+    OpponentDisconected,
   }
 }

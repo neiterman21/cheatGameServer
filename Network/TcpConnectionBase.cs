@@ -119,9 +119,13 @@ namespace CentipedeModel.Network
           this.m_messageBuffer.AddRange((IEnumerable<byte>) array1);
         this.BeginReceive();
       }
+      catch (SocketException)
+      {
+        Program.PlayerDisconectionHandler(this);
+      }
       catch (Exception ex)
       {
-        Debug.WriteLine("Error in AcceptBytes(). Error: " + ex.Message);
+        Console.WriteLine("Error in AcceptBytes(). Error: " + ex.Message);
       }
     }
 

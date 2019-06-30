@@ -9,21 +9,39 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Xml;
 
 namespace CheatGame
 {
+   
   public class Archive : Container<Game>
   {
     public Demographics[] PlayersDemographics = new Demographics[2];
     private DateTime _baseDateTime;
     private readonly string _xmlFileNamePrefix;
+    private int _endGameStringLen = 20;
+    public String[] _endGameString = new String[2];
+    Random rand = new Random();
+
 
     public Archive(string XmlFileNamePrefix)
     {
       TimeStamper.Start();
       this._baseDateTime = TimeStamper.BaseDateTime;
       this._xmlFileNamePrefix = XmlFileNamePrefix;
+      _endGameString[0] = getRandomString(_endGameStringLen);
+      _endGameString[1] = getRandomString(_endGameStringLen);
+    }
+
+    public string getRandomString(int len)
+    {
+      byte[] bytes = new byte[len];
+      rand.NextBytes(bytes);
+      StringBuilder str = new StringBuilder();
+      foreach (byte byteValue in bytes)
+        str.Append( byteValue.ToString("X"));
+      return str.ToString();
     }
 
     private void SavePlayers(XmlElement Root)
@@ -40,6 +58,7 @@ namespace CheatGame
         element.SetAttribute("EducationField", this.PlayersDemographics[index].EducationField.ToString());
         element.SetAttribute("EducationType", this.PlayersDemographics[index].EducationType.ToString());
         element.SetAttribute("IsStudent", this.PlayersDemographics[index].IsStudent.ToString());
+        element.SetAttribute("EndGameString", _endGameString[index]);
         Root.AppendChild((XmlNode) element);
       }
     }

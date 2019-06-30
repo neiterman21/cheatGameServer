@@ -11,14 +11,23 @@ namespace CentipedeModel.Network.Messages
   public sealed class ControlMessage : Message
   {
     public ControlCommandType Commmand { get; set; }
+    public string msg { get; set; }
 
     public ControlMessage(ControlCommandType Commmand)
     {
       this.Commmand = Commmand;
+      this.msg = string.Empty;
+    }
+
+    public ControlMessage(ControlCommandType Commmand, string _msg)
+    : base()
+    {
+      this.Commmand = Commmand;
+      this.msg = _msg;
     }
 
     public ControlMessage(XmlDocument xml, byte[] bytes)
-      : base(xml, bytes)
+    : base(xml, bytes)
     {
     }
   }
