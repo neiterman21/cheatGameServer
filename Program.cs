@@ -193,7 +193,7 @@ namespace CheatGame
     }
     private static void ReportUnfairPlay()
     {
-        
+      viewModel.GamesArchive.setPrevTurnLiar();
     }
     private static void SaveAudio(AudioMessage msg, TimeSpan time, string folder, int audioIndex, int playerId)
     {
@@ -270,8 +270,8 @@ namespace CheatGame
         int num = flag ? 1 : 0;
         viewModel.SendEmptyBoardToOpponent(playerId1, num != 0);
         if (Program.viewModel.TryStartGame() != CheatEngine.TryStartGameReturnCodes.MAX_GAMES_REACHED)
-
           return;
+        Console.WriteLine("max games reached");
         Program.m_mainMessageLoop.Cancel();
       }
       else

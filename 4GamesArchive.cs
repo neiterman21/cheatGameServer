@@ -23,6 +23,7 @@ namespace CheatGame
     private int _endGameStringLen = 20;
     public String[] _endGameString = new String[2];
     Random rand = new Random();
+    private bool prev_turn_liar = false;
 
 
     public Archive(string XmlFileNamePrefix)
@@ -32,6 +33,11 @@ namespace CheatGame
       this._xmlFileNamePrefix = XmlFileNamePrefix;
       _endGameString[0] = getRandomString(_endGameStringLen);
       _endGameString[1] = getRandomString(_endGameStringLen);
+    }
+
+    public void setPrevTurnLiar()
+    {
+      prev_turn_liar = true;
     }
 
     public string getRandomString(int len)
@@ -67,6 +73,11 @@ namespace CheatGame
     {
       XmlDocument xmlDocument = new XmlDocument();
       XmlElement element1 = xmlDocument.CreateElement(this._xmlFileNamePrefix + nameof (Archive));
+      if (prev_turn_liar)
+      {
+        element1.SetAttribute("prev_turn_liar", "True");
+        prev_turn_liar = false;
+      }
       xmlDocument.AppendChild((XmlNode) element1);
       XmlElement element2 = xmlDocument.CreateElement("Players");
       element1.AppendChild((XmlNode) element2);
