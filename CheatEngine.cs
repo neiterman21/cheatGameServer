@@ -279,6 +279,7 @@ namespace CheatGame
         this.BoardMsg = this.CurrentPlayer.PlayerName + " declared " + this.NonCurrentPlayer.PlayerName + " vocal statment was missing or not coresponding to your cardes claim." + 
         this.NonCurrentPlayer.PlayerName + " takes the game stack. This report will be checked manualy ";
         this.SendBoardToOpponents();
+        this.swapPlayerTurn();
       }
       if (this.CurrentPlayer.CallCheat)
       {
@@ -433,8 +434,8 @@ namespace CheatGame
         state.TakeCardEnable = !flag && this._board.getCardsNum() != 0 && !this.CurrentPlayer.CallCheat;
         if (this.CurrentPlayer.CheatyOpponent)
         {
-           state.IsServerTurn = !flag;
-           state.TakeCardEnable = flag;
+           state.IsServerTurn = flag;
+           state.TakeCardEnable = !flag;
         }
         state.CanDispute = this.CurrentPlayer.CheatyOpponent && !flag;
         state.CallCheatEnable = !flag && this.CurrentPlayer.PlayMove;
