@@ -299,10 +299,10 @@ namespace CheatGame
       if (this.CurrentPlayer.TakeCard)
       {
         this.CurrentPlayer.TakeCard = false;
-        CardsStruct cardsStruct = this._board.chooseRandomCards(1);
+        CardsStruct cardsStruct = this._board.chooseRandomCards(3);
         this._board.removeCards(cardsStruct);
         this.CurrentPlayer.addCards(cardsStruct);
-        this.BoardMsg = this.CurrentPlayer.PlayerName + " has taken a card from the unused stack. ";
+        this.BoardMsg = this.CurrentPlayer.PlayerName + " has taken 3 cards from the unused stack. ";
         string commaDelimitedString = cardsStruct.ToCommaDelimitedString();
         this.PlayerMsg = commaDelimitedString.Substring(0, commaDelimitedString.Length - 1);
         this.SendBoardToOpponents();

@@ -179,6 +179,11 @@ namespace CheatGame
     {
       Console.WriteLine("Player " + (object) playerId + " received control msg : " + (object) controlMessage.Commmand);
       if (controlMessage.Commmand == ControlCommandType.Report) ReportUnfairPlay();
+      if (controlMessage.Commmand == ControlCommandType.Tick)
+      {
+        _tcpConnections[playerId].stopwatch.Reset();
+        return;
+      }
       if (++Program.numPlayersEndedRevealing != Program.NUM_PLAYERS)
         return;
       Console.WriteLine("Reveal Ended");

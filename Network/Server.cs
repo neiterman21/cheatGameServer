@@ -4,6 +4,7 @@
 // MVID: D9C86562-18F8-4555-90FE-AA8F248B8776
 // Assembly location: C:\Users\neite\OneDrive\Documents\לימודים\Server\LiarServerApp.exe
 
+using CentipedeModel.Network.Messages;
 using CheatGame;
 using System;
 using System.Net;
@@ -18,6 +19,7 @@ namespace CentipedeModel.Network
     private TcpListener m_tcpListner;
     private TcpClient m_client;
     private IPEndPoint m_serverIPEndPoint;
+    
 
     public override void SetIPEndPoints(string ServerIPEndPoint, string ClientIPEndPoint)
     {
@@ -50,7 +52,24 @@ namespace CentipedeModel.Network
       this.m_socket.NoDelay = true;
       this.BeginReceive();
       this.RaiseStarted();
+      Thread ping = new Thread(sendPing);
+      ping.Start();
     }
+
+    public void sendPing()
+    {
+      stopwatch.Start();
+      while (true)
+      {
+        Send(new ControlMessage(ControlCommandType.Tick));
+        Thread.Sleep(3000);
+        if(TimeSpan.FromSeconds(6) <= stopwatch.Elapsed)
+        {
+          Program.PlayerDisconectionHandler(this);
+        }
+      }
+    }
+
 
     public override IAsyncResult BeginStart()
     {
@@ -59,5 +78,6 @@ namespace CentipedeModel.Network
       return this.m_tcpListner.BeginAcceptTcpClient(new AsyncCallback(this.OnAcceptTcpClient), (object) null);
     }
 
+    
   }
 }

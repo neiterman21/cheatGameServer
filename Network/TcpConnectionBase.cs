@@ -22,6 +22,7 @@ namespace CentipedeModel.Network
     protected byte[] m_buffer = new byte[4096];
     protected List<byte> m_messageBuffer = new List<byte>();
     protected Socket m_socket;
+    public Stopwatch stopwatch = new Stopwatch();
     public abstract void SetIPEndPoints(string serverIPEndPoint, string ClientIPEndPoint);
 
     public abstract IPEndPoint[] GetIPEndPoints();
@@ -109,7 +110,7 @@ namespace CentipedeModel.Network
           }
           catch (Exception ex)
           {
-            Debug.WriteLine("Error in parsing message. Error: " + ex.Message);
+            Console.WriteLine("Error in parsing message. Error: " + ex.Message);
 
           }
           this.m_messageBuffer.Clear();
@@ -121,6 +122,7 @@ namespace CentipedeModel.Network
       }
       catch (SocketException)
       {
+        Console.WriteLine("oponent disconected");
         Program.PlayerDisconectionHandler(this);
       }
       catch (Exception ex)
@@ -143,5 +145,36 @@ namespace CentipedeModel.Network
     }
 
         public abstract void Dispose();
+    public bool IsConnected()
+    {
+      bool blockingState = m_socket.Blocking;
+
+      try
+      {
+        byte[] tmp = new byte[1];
+
+        m_socket.Blocking = false;
+        m_socket.Send(tmp, 0, 0);
+        return true;
+      }
+      catch (SocketException e)
+      {
+        // 10035 == WSAEWOULDBLOCK
+        if (e.NativeErrorCode.Equals(10035))
+        {
+          return true;
+        }
+        else
+        {
+          return false;
+        }
+      }
+      finally
+      {
+        m_socket.Blocking = blockingState;
+      }
+    }
+
+
   }
 }
