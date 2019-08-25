@@ -141,6 +141,7 @@ namespace CheatGame
             (Root.ChildNodes[1] as XmlElement).SetAttribute("Type", "Claim");
             break;
           case MoveType.TakeCard:
+          case MoveType.TimeUp:
             if (this.DerivedItemsList.Count == 0)
               break;
             Root.SetAttribute("ReceivedCard", (object) (this.GetNoneZeroCard(this.DerivedItemsList[0]).Item1 + 1));

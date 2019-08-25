@@ -304,6 +304,9 @@ namespace CheatGame
         this._board.removeCards(cardsStruct);
         this.CurrentPlayer.addCards(cardsStruct);
         this.BoardMsg = this.CurrentPlayer.PlayerName + " has taken 3 cards from the unused stack. ";
+        if (this.CurrentPlayer.TimeEnded)
+          this.BoardMsg += "Due to timeout. ";
+        this.CurrentPlayer.TimeEnded = false;
         string commaDelimitedString = cardsStruct.ToCommaDelimitedString();
         this.PlayerMsg = commaDelimitedString.Substring(0, commaDelimitedString.Length - 1);
         this.SendBoardToOpponents();
@@ -340,6 +343,7 @@ namespace CheatGame
           str += cardsStruct.ToCommaDelimitedString();
         }
       }
+      Console.WriteLine(str.Substring(0, str.Length - 1));
       return str.Substring(0, str.Length - 1);
     }
 
@@ -373,6 +377,8 @@ namespace CheatGame
       this._currGame.PlayerWonId = this._lastWinnerIndex;
       this._currGame.SignalEnd();
       this.SaveTurn();
+      if (this.GamesArchive.DerivedItemsList.Count<Game>() == this._numGames)
+        Program.SendEndGameMessagesToPlayers();
       return true;
     }
 
@@ -493,7 +499,9 @@ namespace CheatGame
           ((HumanPlayer) this.CurrentPlayer).decideMove(false, this.realMove, this.claimMove);
           break;
         case MoveType.TakeCard:
-          ((HumanPlayer) this.CurrentPlayer).decideMove(true, (CardsStruct) null, (CardsStruct) null);
+          ((HumanPlayer)this.CurrentPlayer).decideMove(true, (CardsStruct)null, (CardsStruct)null); break;
+        case MoveType.TimeUp:
+          ((HumanPlayer) this.CurrentPlayer).decideMove(true, (CardsStruct) null, (CardsStruct) null, true);
           break;
         case MoveType.CallCheat:
           this.CurrentPlayer.decideCallCheat();

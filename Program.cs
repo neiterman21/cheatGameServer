@@ -177,6 +177,7 @@ namespace CheatGame
 
     private static void OnServer_ReceivedControl(ControlMessage controlMessage, int playerId)
     {
+      if (controlMessage.Commmand != ControlCommandType.Tick)
       Console.WriteLine("Player " + (object) playerId + " received control msg : " + (object) controlMessage.Commmand);
       if (controlMessage.Commmand == ControlCommandType.Report) ReportUnfairPlay();
       if (controlMessage.Commmand == ControlCommandType.Tick)
@@ -277,13 +278,14 @@ namespace CheatGame
         if (Program.viewModel.TryStartGame() != CheatEngine.TryStartGameReturnCodes.MAX_GAMES_REACHED)
           return;
         Console.WriteLine("max games reached");
+        SendEndGameMessagesToPlayers();
         Program.m_mainMessageLoop.Cancel();
       }
       else
         Program.viewModel.GameStepOnReceivedOpponentMove(move, playerId);
     }
 
-    private static void SendEndGameMessagesToPlayers()
+    public static void SendEndGameMessagesToPlayers()
     {
        for (int index = 0; index < 2; ++index)
          {

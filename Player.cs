@@ -11,6 +11,7 @@ namespace CheatGame
   public abstract class Player : CardHolderInterface
   {
     protected bool _takeCard = false;
+    protected bool _timeEnded = false;
     protected bool _playMove = false;
     protected bool _callCheat = false;
     protected bool _forfeited = false;
@@ -82,6 +83,18 @@ namespace CheatGame
       set
       {
         this._takeCard = value;
+      }
+    }
+
+    public bool TimeEnded
+    {
+      get
+      {
+        return this._timeEnded;
+      }
+      set
+      {
+        this._timeEnded = value;
       }
     }
 

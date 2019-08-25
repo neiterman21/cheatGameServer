@@ -44,6 +44,7 @@ namespace CheatGame
     private void regularMove(Board board)
     {
       this._takeCard = false;
+      this._timeEnded = false;
       this._playMove = true;
       this.realMove = this.Cards.getRandomCards(this.RandomNumber(1, 5));
       int cardsNum = this.realMove.CardsNum;

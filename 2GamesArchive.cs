@@ -53,7 +53,7 @@ namespace CheatGame
     {
       get
       {
-        return this.DerivedItemsList.Count<Turn>((Func<Turn, bool>) (t => t.MoveType == MoveType.TakeCard));
+        return this.DerivedItemsList.Count<Turn>((Func<Turn, bool>) (t => (t.MoveType == MoveType.TakeCard || t.MoveType == MoveType.TimeUp)));
       }
     }
 
@@ -77,7 +77,7 @@ namespace CheatGame
     {
       get
       {
-        return this.DerivedItemsList.Count<Turn>((Func<Turn, bool>) (t => t.MoveType == MoveType.TakeCard && t.PlayerIndex == 0));
+        return this.DerivedItemsList.Count<Turn>((Func<Turn, bool>) (t => (t.MoveType == MoveType.TakeCard || t.MoveType == MoveType.TimeUp) && t.PlayerIndex == 0));
       }
     }
 
@@ -101,7 +101,7 @@ namespace CheatGame
     {
       get
       {
-        return this.DerivedItemsList.Count<Turn>((Func<Turn, bool>) (t => t.MoveType == MoveType.TakeCard && t.PlayerIndex == 1));
+        return this.DerivedItemsList.Count<Turn>((Func<Turn, bool>) (t => (t.MoveType == MoveType.TakeCard || t.MoveType == MoveType.TimeUp) && t.PlayerIndex == 1));
       }
     }
 
