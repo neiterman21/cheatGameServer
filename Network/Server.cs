@@ -10,6 +10,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Timers;
 using System.Windows.Forms;
 
 namespace CentipedeModel.Network
@@ -59,7 +60,12 @@ namespace CentipedeModel.Network
     public void sendPing()
     {
       stopwatch.Start();
-      while (true)
+      System.Timers.Timer t = new System.Timers.Timer();
+      t.Interval = 3000; // In milliseconds
+      t.AutoReset = false; // Stops it from repeating
+      t.Elapsed += new ElapsedEventHandler(sendTick);
+      t.Start();
+     /* while (true)
       {
         Send(new ControlMessage(ControlCommandType.Tick));
         Thread.Sleep(3000);
@@ -67,6 +73,15 @@ namespace CentipedeModel.Network
         {
           Program.PlayerDisconectionHandler(this);
         }
+      }*/
+    }
+
+    void sendTick(object sender, ElapsedEventArgs e)
+    {
+      Send(new ControlMessage(ControlCommandType.Tick));
+      if (TimeSpan.FromSeconds(6) <= stopwatch.Elapsed)
+      {
+        Program.PlayerDisconectionHandler(this);
       }
     }
 

@@ -364,10 +364,16 @@ namespace CheatGame
         return false;
       for (int index = 0; index < Program.NUM_PLAYERS; ++index)
         this.PlayerStartPressed[index] = false;
+      string won_the_game = this.NonCurrentPlayer.PlayerName;
+      if ( forfieted ) won_the_game = this.CurrentPlayer.PlayerName;
       this.BoardMsg = this.NonCurrentPlayer.PlayerName + " has won. Game Ended.";
       this.SendBoardToOpponents();
       this._numStartPressed = 0;
       this._lastWinnerIndex = this.NonCurrentPlayer == this._player1 ? 0 : 1;
+      if (forfieted)
+      {
+        this._lastWinnerIndex = (this._lastWinnerIndex + 1) % 2;
+      }
       if (!this.realMove.Equals((object) CardsStruct.EmptyStruct))
         this._currTurn.DerivedItemsList.Add((CardsStruct) this.realMove.Clone());
       if (!this.claimMove.Equals((object) CardsStruct.EmptyStruct))
@@ -566,16 +572,19 @@ namespace CheatGame
       {
         this._opponentFolders[index3] = string.Format("\\{0}", (object) Names[index3]);
         this._fullPathPlayersFolders[index3] = Program.RootDir + this._opponentFolders[index3];
+        Console.WriteLine(this._fullPathPlayersFolders[index3]);
         int i = 0;
         while (Directory.Exists(Program.RootDir + this._opponentFolders[index3]))
          {
-            if (Regex.IsMatch(_opponentFolders[index3].Substring(_opponentFolders[index3].Length - 1 ,1), @"\d")) { //check if last char is a digit
-                        this._opponentFolders[index3] = _opponentFolders[index3].Substring(_opponentFolders[index3].Length - 1, 1);
-                                    }
+            if (Regex.IsMatch(_opponentFolders[index3].Substring(_opponentFolders[index3].Length - 1 ,1), @"\d"))
+            { //check if last char is a digit
+              this._opponentFolders[index3] = _opponentFolders[index3].Substring(0, _opponentFolders[index3].Length - 1);
+            }
             this._opponentFolders[index3] = this._opponentFolders[index3] + i.ToString();
             i++;
             this._fullPathPlayersFolders[index3] = Program.RootDir + this._opponentFolders[index3];
          }
+         //Console.WriteLine(this._fullPathPlayersFolders[index3]);
          Directory.CreateDirectory(this._fullPathPlayersFolders[index3]);
       }
       this._currGame = new Game(this.GamesArchive);

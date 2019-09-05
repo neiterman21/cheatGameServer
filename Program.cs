@@ -308,8 +308,8 @@ namespace CheatGame
       else
       {
         Process.Start(Application.ExecutablePath);
-      }    
-      Environment.Exit(0);
+      }
+      Program.m_mainMessageLoop.Cancel();
       
     }
 
