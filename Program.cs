@@ -183,6 +183,7 @@ namespace CheatGame
       if (controlMessage.Commmand == ControlCommandType.Tick)
       {
         _tcpConnections[playerId].stopwatch.Reset();
+        _tcpConnections[playerId].stopwatch.Start();
         return;
       }
       if (++Program.numPlayersEndedRevealing != Program.NUM_PLAYERS)
@@ -297,19 +298,33 @@ namespace CheatGame
 
     public static void PlayerDisconectionHandler(TcpConnectionBase client)
     {
-      if (_numConnectionStarted >= 2)
+      if (_numConnectionStarted >= 2 )
       {
         for (int index = 0; index < 2; ++index)
         {
-          ControlMessage msg = new ControlMessage(ControlCommandType.OpponentDisconected, viewModel.GamesArchive._endGameString[index]);
-          Program._tcpConnections[index].Send(msg);
+          ControlMessage msg;
+         // Program.m_mainMessageLoop.Cancel();
+         if (_numDemographicsReceived >= 2)
+          {
+            msg = new ControlMessage(ControlCommandType.OpponentDisconected, viewModel.GamesArchive._endGameString[index]);
+            Program._tcpConnections[index].Send(msg);
+            Program.viewModel.OnCloseApp();
+          }
+          else
+          {
+            msg = new ControlMessage(ControlCommandType.OpponentDisconected, "");
+            Program._tcpConnections[index].Send(msg);
+          }
+            
+          Environment.Exit(0);
         }
       }
       else
       {
         Process.Start(Application.ExecutablePath);
+        Environment.Exit(0);
       }
-      Program.m_mainMessageLoop.Cancel();
+      
       
     }
 

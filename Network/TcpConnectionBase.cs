@@ -111,7 +111,6 @@ namespace CentipedeModel.Network
           catch (Exception ex)
           {
             Console.WriteLine("Error in parsing message. Error: " + ex.Message);
-
           }
           this.m_messageBuffer.Clear();
           array1 = numArray2;
@@ -139,9 +138,17 @@ namespace CentipedeModel.Network
       byte[] buffer = new byte[bytes.Length + Message.EOM.Length];
       Buffer.BlockCopy((Array) bytes, 0, (Array) buffer, 0, bytes.Length);
       Buffer.BlockCopy((Array) Message.EOM, 0, (Array) buffer, bytes.Length, Message.EOM.Length);
-      if (this.m_socket == null || !this.m_socket.Connected)
-        return;
-      this.m_socket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, (AsyncCallback) null, (object) null);
+      try
+      {
+        if (this.m_socket == null || !this.m_socket.Connected)
+          return;
+        this.m_socket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, (AsyncCallback)null, (object)null);
+      }
+      catch (Exception e)
+      {
+
+      }
+ 
     }
 
         public abstract void Dispose();

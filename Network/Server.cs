@@ -60,28 +60,16 @@ namespace CentipedeModel.Network
     public void sendPing()
     {
       stopwatch.Start();
-      System.Timers.Timer t = new System.Timers.Timer();
-      t.Interval = 3000; // In milliseconds
-      t.AutoReset = false; // Stops it from repeating
-      t.Elapsed += new ElapsedEventHandler(sendTick);
-      t.Start();
-     /* while (true)
+      Console.WriteLine("starting tick send");
+      while (true)
       {
         Send(new ControlMessage(ControlCommandType.Tick));
         Thread.Sleep(3000);
-        if(TimeSpan.FromSeconds(6) <= stopwatch.Elapsed)
+        Console.WriteLine(stopwatch.Elapsed);
+        if (TimeSpan.FromSeconds(6) <= stopwatch.Elapsed)
         {
           Program.PlayerDisconectionHandler(this);
         }
-      }*/
-    }
-
-    void sendTick(object sender, ElapsedEventArgs e)
-    {
-      Send(new ControlMessage(ControlCommandType.Tick));
-      if (TimeSpan.FromSeconds(6) <= stopwatch.Elapsed)
-      {
-        Program.PlayerDisconectionHandler(this);
       }
     }
 
