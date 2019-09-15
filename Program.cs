@@ -237,6 +237,7 @@ namespace CheatGame
     {
       TimeSpan time = TimeStamper.Time;
       int index = (playerId + 1) % 2;
+      Console.WriteLine("Received Audio. Name: " + Program._demographics[playerId].FullName);
       Program._tcpConnections[index].Send(message);
       string currentFolder = Program.viewModel.GetCurrentFolder(playerId);
       if (currentFolder != null)
@@ -307,6 +308,7 @@ namespace CheatGame
          if (_numDemographicsReceived >= 2)
           {
             msg = new ControlMessage(ControlCommandType.OpponentDisconected, viewModel.GamesArchive._endGameString[index]);
+            Console.WriteLine("sending oponent disconected");
             Program._tcpConnections[index].Send(msg);
             Program.viewModel.OnCloseApp();
           }
@@ -315,7 +317,7 @@ namespace CheatGame
             msg = new ControlMessage(ControlCommandType.OpponentDisconected, "");
             Program._tcpConnections[index].Send(msg);
           }
-            
+          Thread.Sleep(10000);
           Environment.Exit(0);
         }
       }

@@ -54,6 +54,8 @@ namespace CentipedeModel.Network
       this.BeginReceive();
       this.RaiseStarted();
       Thread ping = new Thread(sendPing);
+      ping.IsBackground = true;
+      ping.Name = "ping thread";
       ping.Start();
     }
 
@@ -61,13 +63,20 @@ namespace CentipedeModel.Network
     {
       stopwatch.Start();
       Console.WriteLine("starting tick send");
+      Send(new ControlMessage(ControlCommandType.Tick));
+      Thread.Sleep(1000);
       while (true)
       {
-        Send(new ControlMessage(ControlCommandType.Tick));
-        Thread.Sleep(3000);
-        Console.WriteLine(stopwatch.Elapsed);
-        if (TimeSpan.FromSeconds(6) <= stopwatch.Elapsed)
+        Thread.Sleep(50);
+        if (TimeSpan.FromSeconds(3) <= stopwatch.Elapsed)
         {
+          Send(new ControlMessage(ControlCommandType.Tick));
+        }
+        
+        if (TimeSpan.FromSeconds(8) <= stopwatch.Elapsed)
+        {
+          Console.WriteLine("time passed " + stopwatch.Elapsed);
+          Thread.Sleep(5000);
           Program.PlayerDisconectionHandler(this);
         }
       }
