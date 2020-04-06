@@ -304,8 +304,8 @@ namespace CheatGame
         for (int index = 0; index < 2; ++index)
         {
           ControlMessage msg;
-         // Program.m_mainMessageLoop.Cancel();
-         if (_numDemographicsReceived >= 2)
+          // Program.m_mainMessageLoop.Cancel();
+          if (_numDemographicsReceived >= 2)
           {
             msg = new ControlMessage(ControlCommandType.OpponentDisconected, viewModel.GamesArchive._endGameString[index]);
             Console.WriteLine("sending oponent disconected");
@@ -314,20 +314,25 @@ namespace CheatGame
           }
           else
           {
+            Console.WriteLine("sending oponent disconected");
             msg = new ControlMessage(ControlCommandType.OpponentDisconected, "");
             Program._tcpConnections[index].Send(msg);
-          }
-          Thread.Sleep(10000);
-          Environment.Exit(0);
+          }   
         }
+        int i = 0;
+        while (i < 30)
+        {
+          Thread.Sleep(1000);
+          Application.DoEvents();
+          i++;
+        }
+        Environment.Exit(0);
       }
       else
       {
         Process.Start(Application.ExecutablePath);
         Environment.Exit(0);
-      }
-      
-      
+      }  
     }
 
     public delegate void SaveAudioHandler(AudioMessage msg, TimeSpan time, string folder, int imageIndex, int playerId);
