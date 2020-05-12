@@ -143,10 +143,11 @@ namespace CentipedeModel.Network
         if (this.m_socket == null || !this.m_socket.Connected)
           return;
         this.m_socket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, (AsyncCallback)null, (object)null);
+        Console.WriteLine("sent message " + message.Type );
       }
       catch (Exception e)
       {
-
+         Console.WriteLine("Failed sent message " + message.Type);
       }
  
     }

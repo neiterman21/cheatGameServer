@@ -27,9 +27,9 @@ namespace CheatGame
     public Archive GamesArchive = new Archive("Liar");
     private bool firstGame = true;
     public bool[] PlayerStartPressed = new bool[Program.NUM_PLAYERS];
-    private string[] _opponentFolders = new string[2];
-    public Player[] Players = new Player[Program.NUM_PLAYERS];
-    private string[] _fullPathPlayersFolders = new string[2];
+    private string[] _opponentFolders = new string[Program.NUM_PLAYERS];
+    public Player[] Players = new Player[2];
+    private string[] _fullPathPlayersFolders = new string[Program.NUM_PLAYERS];
     private Board _board;
     private Player _player1;
     private Player _player2;
@@ -535,10 +535,10 @@ namespace CheatGame
 
     public void InitPlayers(string[] Names)
     {
-      HumanPlayer humanPlayer1 = new HumanPlayer();
+      Player humanPlayer1 = new HumanPlayer();
       humanPlayer1.PlayerName = Names[0];
       this._player1 = (Player) humanPlayer1;
-      HumanPlayer humanPlayer2 = new HumanPlayer();
+      Player humanPlayer2 = new HumanPlayer();
       humanPlayer2.PlayerName = Names[1];
       this._player2 = (Player) humanPlayer2;
       this.Players[0] = this._player1;

@@ -39,8 +39,10 @@ namespace CheatGame
     public static int _camFrameRate;
     public static int _numGames;
     private static string SERVER_ENDPOINT;
+    public static string agent_name = "Tom";
 
-   
+
+
         private static void Main(string[] args)
     {
       Console.WriteLine("Welcome to Liar! game server." + Environment.NewLine);
@@ -54,7 +56,7 @@ namespace CheatGame
       Console.WriteLine(Environment.NewLine + "Note: Please re-start any open clients now..." + Environment.NewLine);
       Console.WriteLine(Environment.NewLine + "PRESS CTRL+C ANYTIME TO END SERVER" + Environment.NewLine);
       Console.CancelKeyPress += new ConsoleCancelEventHandler(Program.Console_CancelKeyPress);
-      Program.m_saveMessageLoop = new MessageLoop[2];
+      Program.m_saveMessageLoop = new MessageLoop[NUM_PLAYERS];
       for (int index = 0; index < Program.m_saveMessageLoop.Length; ++index)
         Program.m_saveMessageLoop[index] = Program.CreateSaveImageLoop(index);
       Program.m_mainMessageLoop = new MessageLoop();
@@ -134,7 +136,7 @@ namespace CheatGame
             Console.WriteLine("Connection established: " + (object)(sender as Server).GetIPEndPoints()[0]);
             _numConnectionStarted = _numConnectionStarted + 1;
         }
-        if (_numConnectionStarted >= 2)
+        if (_numConnectionStarted >= NUM_PLAYERS)
             Process.Start(Application.ExecutablePath);
         }
 
@@ -142,9 +144,10 @@ namespace CheatGame
     {
       if (Program._numDemographicsReceived < Program.NUM_PLAYERS)
         return false;
-      string[] Names = new string[Program.NUM_PLAYERS];
+      string[] Names = new string[2];
       for (int index = 0; index < Program.NUM_PLAYERS; ++index)
         Names[index] = Program._demographics[index].FullName;
+      if (Program.NUM_PLAYERS == 1) Names[1] = agent_name;
       Program.viewModel.InitPlayers(Names);
       return true;
     }
@@ -236,7 +239,7 @@ namespace CheatGame
     private static void OnServer_ReceivedAudioMessage(AudioMessage message, int playerId)
     {
       TimeSpan time = TimeStamper.Time;
-      int index = (playerId + 1) % 2;
+      int index = (playerId + 1) % NUM_PLAYERS;
       Console.WriteLine("Received Audio. Name: " + Program._demographics[playerId].FullName);
       Program._tcpConnections[index].Send(message);
       string currentFolder = Program.viewModel.GetCurrentFolder(playerId);
@@ -257,10 +260,7 @@ namespace CheatGame
       Console.WriteLine("Received Demographics. Name: " + Program._demographics[playerId].FullName);
       Program.TryInitPlayers();
       CheatEngine viewModel = Program.viewModel;
-      bool flag = false;
-      int playerId1 = playerId;
-      int num = flag ? 1 : 0;
-      viewModel.SendEmptyBoardToOpponent(playerId1, num != 0);
+      viewModel.SendEmptyBoardToOpponent(playerId, false);
     }
 
     private static void OnServer_ReceivedMove(MoveMessage message, int playerId)
@@ -289,7 +289,7 @@ namespace CheatGame
 
     public static void SendEndGameMessagesToPlayers()
     {
-       for (int index = 0; index < 2; ++index)
+       for (int index = 0; index < Program.NUM_PLAYERS; ++index)
          {
            ControlMessage msg = new ControlMessage(ControlCommandType.EndMatch , viewModel.GamesArchive._endGameString[index]);
            Program._tcpConnections[index].Send(msg);
